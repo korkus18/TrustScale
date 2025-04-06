@@ -26,18 +26,33 @@ def main():
         json.dump(post_data, f, indent=2, ensure_ascii=False)
     print(f" Uloženo: {json_path}")
 
-    # Stažení média
-    media_type = ".mp4" if post_data["is_video"] else ".jpg"
-    media_filename = f"media{media_type}"
-    media_path = os.path.join(output_dir, media_filename)
+    # Stažení médií
+    if post_data.get("carousel"):
+        # Pokud existuje karusel (více médií)
+        for idx, item in enumerate(post_data["carousel"], start=1):
+            media_type = ".mp4" if item["is_video"] else ".jpg"
+            media_url = item["media_url"]
+            media_filename = f"media_{idx}{media_type}"
+            media_path = os.path.join(output_dir, media_filename)
 
-    response = requests.get(post_data["media_url"])
-    if response.status_code == 200:
-        with open(media_path, "wb") as f:
-            f.write(response.content)
-        print(f" Médium uloženo jako: {media_path}")
+            response = requests.get(media_url)
+            if response.status_code == 200:
+                with open(media_path, "wb") as f:
+                    f.write(response.content)
+                print(f" Uloženo: {media_path}")
+            else:
+                print(f" Chyba při stahování {media_url}: HTTP {response.status_code}")
     else:
-        print(f" Chyba při stahování média: HTTP {response.status_code}")
+        # Jedno médium
+        media_type = ".mp4" if post_data["is_video"] else ".jpg"
+        media_path = os.path.join(output_dir, f"media{media_type}")
+        response = requests.get(post_data["media_url"])
+        if response.status_code == 200:
+            with open(media_path, "wb") as f:
+                f.write(response.content)
+            print(f" Uloženo: {media_path}")
+        else:
+            print(f" Chyba při stahování média: HTTP {response.status_code}")
 
 if __name__ == "__main__":
     main()
