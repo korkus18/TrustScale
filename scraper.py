@@ -44,7 +44,7 @@ def scrape_post(shortcode: str):
     caption = media.get("edge_media_to_caption", {}).get("edges", [{}])[0].get("node", {}).get("text", "")
     hashtags = re.findall(r"#(\w+)", caption)
 
-    # Owner
+    # Owner info
     owner = media.get("owner", {})
     author_info = {
         "username": owner.get("username"),
@@ -52,7 +52,7 @@ def scrape_post(shortcode: str):
         "id": owner.get("id")
     }
 
-    # Engagement
+    # Likes & Comments
     likes = media.get("edge_media_preview_like", {}).get("count")
     comments = media.get("edge_media_to_comment", {}).get("count")
 
@@ -66,6 +66,17 @@ def scrape_post(shortcode: str):
         "lat": location.get("lat") if location else None,
         "lng": location.get("lng") if location else None
     }
+
+    # Tagged users
+    tagged_users = []
+    if "edge_media_to_tagged_user" in media:
+        for edge in media["edge_media_to_tagged_user"].get("edges", []):
+            user = edge.get("node", {}).get("user", {})
+            if user:
+                tagged_users.append({
+                    "username": user.get("username"),
+                    "full_name": user.get("full_name")
+                })
 
     # Carousel
     carousel = []
@@ -89,6 +100,7 @@ def scrape_post(shortcode: str):
         "comment_count": comments,
         "accessibility_caption": alt_text,
         "location": location_info,
+        "tagged_users": tagged_users if tagged_users else None,
         "carousel": carousel if carousel else None
     }
 
