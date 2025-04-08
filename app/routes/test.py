@@ -13,6 +13,6 @@ def scrape_instagram_post(url: str):
     Scrapes Instagram post data and returns it as a structured Post model.
     """
     try:
-        return scraper.scrape(shortcode="DIGYx2ZMwFv")
+        return scraper.scrape(url=url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

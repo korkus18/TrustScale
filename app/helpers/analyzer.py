@@ -9,4 +9,4 @@ class Analyzer:
         pass
 
     def run(self, post: Post) -> Result:
-        post =
+        pass

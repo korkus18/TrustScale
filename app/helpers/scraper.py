@@ -1,23 +1,37 @@
-import requests
+import re
 import json
 from urllib.parse import quote
-from app.models.post import Post
-from app.constants import INSTAGRAM_DOCUMENT_ID, INSTAGRAM_URL, HEADERS
-import re
+import requests
 from app.models.post import Post, Author, CarouselItem, Location
+from app.constants import INSTAGRAM_DOCUMENT_ID, INSTAGRAM_URL, HEADERS
 
 
 class Scraper:
+    """Class for scraper
+
+    Raises:
+        http_error: Raised when request gives error
+
+    """
+
     def __init__(self):
         pass
 
-    def parse_shortcode(self, url: str) -> str:
+    def _parse_shortcode(self, url: str) -> str:
         """Returns shortcode for a post"""
         # https://www.instagram.com/p/DIGYx2ZMwFv/?img_index=1
 
         return url.split("/")[4]
 
     def map_instagram_response(self, data: dict) -> Post:
+        """Maps instagram response to Post datapyte structure
+
+        Args:
+            data (dict): Response from instagram as dictionaty
+
+        Returns:
+            Post: Custom datatype Post
+        """
         media = data["data"]["xdt_shortcode_media"]
 
         caption_text = media.get("edge_media_to_caption", {}).get("edges", [{}])[0].get("node", {}).get("text", "")
@@ -61,7 +75,19 @@ class Scraper:
             carousel=carousel if carousel else None
         )
 
-    def scrape(self, shortcode: str) -> Post:
+    def scrape(self, url: str) -> Post:
+        """Scrapes data from  intstagram passes it to map_instagram_response
+
+        Args:
+            url (str): Url of instagram post
+
+        Raises:
+            http_error: Raised when request gives error
+
+        Returns:
+            Post: returns dat with type Post which is used in Analyzer
+        """
+        shortcode = self._parse_shortcode(url=url)
 
         # Prepare variables and encode
         variables = {
