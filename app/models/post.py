@@ -32,4 +32,4 @@ class Post(BaseModel):
     accessibility_caption: Optional[str]
     location: Location
     tagged_users: Optional[list[str]]  # Or replace str with a model if you know the structure
-    carousel: list[CarouselItem]
+    carousel: Optional[list[CarouselItem]]
