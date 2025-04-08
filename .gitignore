@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+ENV/
+env.bak/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Mypy / Pyright / Pytest
+.mypy_cache/
+.pytest_cache/
+.pyright/
+
+# IDEs
+.idea/
+*.iml
+
+# Byte-compiled / optimized / DLL files
+*.pyd
+*.pyo
+*.dll
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Pydantic cache
+__pydantic__/  # if using compiled models
