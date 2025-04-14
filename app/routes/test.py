@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.helpers.scraper import Scraper
-from app.models.post import Post
+from helpers.scraper import Scraper
+from models.post import Post
 
 router = APIRouter()
 
@@ -8,6 +8,7 @@ scraper = Scraper()
 
 
 last_scraped_post: Post | None = None
+
 
 @router.post("/scrape", response_model=Post)
 def scrape_instagram_post(url: str):
