@@ -35,6 +35,9 @@ function DataPage() {
                 <li><strong>Celé jméno:</strong> {data.author.full_name}</li>
                 <li><strong>ID:</strong> {data.author.id}</li>
             </ul>
+            <ul className="list-disc pl-4">
+                <li><strong>caption:</strong>{data.caption}</li>
+            </ul>
         </div>
     );
 }
