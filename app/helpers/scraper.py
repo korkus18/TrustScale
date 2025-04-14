@@ -23,7 +23,7 @@ class Scraper:
 
         return url.split("/")[4]
 
-    async def map_instagram_response(self, data: dict) -> Post:
+    def map_instagram_response(self, data: dict) -> Post:
         """Maps instagram response to Post datapyte structure
 
         Args:
@@ -98,7 +98,7 @@ class Scraper:
                     headers=HEADERS
                 )
                 response.raise_for_status()
-                return await self.map_instagram_response(response.json())
+                return self.map_instagram_response(response.json())
 
         except httpx.RequestError as http_error:
             raise http_error
