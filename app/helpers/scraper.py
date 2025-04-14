@@ -1,7 +1,7 @@
 import re
 import json
 from urllib.parse import quote
-import requests
+import httpx
 from models.post import Post, Author, CarouselItem, Location
 from constants import INSTAGRAM_DOCUMENT_ID, INSTAGRAM_URL, HEADERS
 
@@ -23,7 +23,7 @@ class Scraper:
 
         return url.split("/")[4]
 
-    def map_instagram_response(self, data: dict) -> Post:
+    async def map_instagram_response(self, data: dict) -> Post:
         """Maps instagram response to Post datapyte structure
 
         Args:
@@ -75,18 +75,7 @@ class Scraper:
             carousel=carousel if carousel else None
         )
 
-    def scrape(self, url: str) -> Post:
-        """Scrapes data from  intstagram passes it to map_instagram_response
-
-        Args:
-            url (str): Url of instagram post
-
-        Raises:
-            http_error: Raised when request gives error
-
-        Returns:
-            Post: returns dat with type Post which is used in Analyzer
-        """
+    async def fetch_instagram_data(self, url: str):
         shortcode = self._parse_shortcode(url=url)
 
         # Prepare variables and encode
@@ -97,20 +86,19 @@ class Scraper:
             "hoisted_reply_id": None
         }
         encoded_variables = quote(json.dumps(variables, separators=(',', ':')))
-
         payload = f"variables={encoded_variables}&doc_id={INSTAGRAM_DOCUMENT_ID}"
 
         print(f"📡 Sending request to Instagram API for shortcode: {shortcode}")
 
         try:
-            response = requests.post(
-                INSTAGRAM_URL,
-                data=payload,
-                headers=HEADERS,
-                timeout=30
-            )
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(
+                    INSTAGRAM_URL,
+                    content=payload,
+                    headers=HEADERS
+                )
+                response.raise_for_status()
+                return await self.map_instagram_response(response.json())
 
-            return self.map_instagram_response(response.json())
-
-        except requests.RequestException as http_error:
+        except httpx.RequestError as http_error:
             raise http_error
