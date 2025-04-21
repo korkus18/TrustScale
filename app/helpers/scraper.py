@@ -2,8 +2,8 @@ import re
 import json
 from urllib.parse import quote
 import requests
-from app.models.post import Post, Author, CarouselItem, Location
-from app.constants import INSTAGRAM_DOCUMENT_ID, INSTAGRAM_URL, HEADERS
+from models.post import Post, Author, CarouselItem, Location
+from constants import INSTAGRAM_DOCUMENT_ID, INSTAGRAM_URL, HEADERS
 
 
 class Scraper:
