@@ -1,13 +1,14 @@
 from fastapi import APIRouter, HTTPException
-from helpers.scraper import Scraper
-from models.post import Post
+from app.helpers.scraper import Scraper
+from app.models.post import Post
+from typing import Optional
 
 router = APIRouter()
 
 scraper = Scraper()
 
 
-last_scraped_post: Post | None = None
+last_scraped_post: Optional[Post] = None
 
 
 @router.post("/scrape", response_model=Post)
